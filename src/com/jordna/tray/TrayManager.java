@@ -15,85 +15,85 @@ import java.net.URISyntaxException;
 
 import javax.swing.ImageIcon;
 
-public class TrayManager 
+public class TrayManager
 {
 
-	private TrayIcon trayIcon;
-	
-	private Image normalIcon;
-	private Image erroredIcon;
-	
-	public TrayManager()
+    private TrayIcon trayIcon;
+
+    private Image normalIcon;
+    private Image erroredIcon;
+
+    public TrayManager()
+    {
+	initializeIcons();
+	createTrayIcon();
+    }
+
+    private void initializeIcons()
+    {
+	normalIcon = new ImageIcon("Images/Icon.png").getImage();
+	erroredIcon = new ImageIcon("Images/IconError.png").getImage();
+    }
+
+    private void createTrayIcon()
+    {
+	if (SystemTray.isSupported())
 	{
-		initializeIcons();
-		createTrayIcon();
-	}
-	
-	private void initializeIcons()
-	{
-		normalIcon = new ImageIcon("Images/Icon.png").getImage();
-		erroredIcon = new ImageIcon("Images/IconError.png").getImage();
-	}
-	
-	private void createTrayIcon()
-	{
-		if (SystemTray.isSupported()) 
+	    PopupMenu menu = new PopupMenu();
+
+	    MenuItem website = new MenuItem("Go to alerts");
+	    MenuItem exit = new MenuItem("Exit");
+
+	    menu.add(website);
+	    menu.add(exit);
+
+	    website.addActionListener(new ActionListener()
+	    {
+		public void actionPerformed(ActionEvent arg0)
 		{
-			PopupMenu menu = new PopupMenu();
-			
-			MenuItem website = new MenuItem("Go to alerts");
-			MenuItem exit = new MenuItem("Exit");
-			
-			menu.add(website);
-			menu.add(exit);
-			
-			website.addActionListener(new ActionListener()
+		    if (Desktop.isDesktopSupported())
+		    {
+			try
 			{
-				public void actionPerformed(ActionEvent arg0)
-				{
-					if (Desktop.isDesktopSupported())
-					{
-						try 
-						{
-							Desktop.getDesktop().browse(new URI("https://bukkit.org/account/alerts"));
-						} 
-						catch (IOException e) 
-						{
-							return;
-						} 
-						catch (URISyntaxException e) 
-						{
-							return;
-						}
-					}
-				}
-			});
-			
-			exit.addActionListener(new ActionListener() 
-			{
-				public void actionPerformed(ActionEvent arg0) 
-				{
-					System.exit(0);
-				}
-			});
-			
-			SystemTray systemTray = SystemTray.getSystemTray();
-			trayIcon = new TrayIcon(normalIcon, "Bukkit Alerts", menu);
-			
-			try 
-			{
-				systemTray.add(trayIcon);
+			    Desktop.getDesktop().browse(new URI("https://bukkit.org/account/alerts"));
 			}
-			catch (AWTException e) 
+			catch (IOException e)
 			{
-				return;
+			    return;
 			}
+			catch (URISyntaxException e)
+			{
+			    return;
+			}
+		    }
 		}
+	    });
+
+	    exit.addActionListener(new ActionListener()
+	    {
+		public void actionPerformed(ActionEvent arg0)
+		{
+		    System.exit(0);
+		}
+	    });
+
+	    SystemTray systemTray = SystemTray.getSystemTray();
+	    trayIcon = new TrayIcon(normalIcon, "Bukkit Alerts", menu);
+
+	    try
+	    {
+		systemTray.add(trayIcon);
+	    }
+	    catch (AWTException e)
+	    {
+		return;
+	    }
 	}
-	
-	public void setErroredIcon()
-	{
-		trayIcon.setImage(erroredIcon);
-	}
-	
+    }
+
+    public void setErroredIcon()
+    {
+	trayIcon.setImage(erroredIcon);
+    }
+
 }
