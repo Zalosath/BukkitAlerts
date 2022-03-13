@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
@@ -56,7 +57,7 @@ public class LoginManager
 
     private void setupHttpsUrlConnection()
     {
-	HttpsURLConnection.setFollowRedirects(true);
+	HttpURLConnection.setFollowRedirects(true);
     }
 
     private void setupCookieManager()
@@ -87,7 +88,7 @@ public class LoginManager
 	}
 	catch (IOException e)
 	{
-	    errorManager.setError("IOException on conn");
+	    errorManager.setError("IOException on conn", true);
 	    return;
 	}
 
@@ -99,7 +100,7 @@ public class LoginManager
 	}
 	catch (ProtocolException e)
 	{
-	    errorManager.setError("ProtocolException thrown when setting request method");
+	    errorManager.setError("ProtocolException thrown when setting request method", true);
 	    return;
 	}
 
@@ -129,7 +130,7 @@ public class LoginManager
 	}
 	catch (IOException e)
 	{
-	    errorManager.setError("IOException with GET request");
+	    errorManager.setError("IOException with GET request", true);
 	    return;
 	}
 
@@ -147,7 +148,7 @@ public class LoginManager
 	}
 	catch (IOException e)
 	{
-	    errorManager.setError("Failed to connect to URL");
+	    errorManager.setError("Failed to connect to URL", true);
 	    return;
 	}
 
@@ -159,7 +160,7 @@ public class LoginManager
 	}
 	catch (ProtocolException e)
 	{
-	    errorManager.setError("ProtocolException thrown when setting request method");
+	    errorManager.setError("ProtocolException thrown when setting request method", true);
 	    return;
 	}
 
@@ -202,7 +203,7 @@ public class LoginManager
 	}
 	catch (IOException e)
 	{
-	    errorManager.setError("Failed to read data from POST connection");
+	    errorManager.setError("Failed to read data from POST connection", true);
 	    return;
 	}
     }

@@ -1,7 +1,6 @@
 package com.jordna.web;
 
 import java.io.BufferedReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -12,21 +11,34 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.jordna.audio.AudioManager;
 import com.jordna.error.ErrorManager;
 import com.jordna.settings.UserSettings;
+import com.jordna.tray.TrayManager;
 
 public class AlertHandler
 {
 
     // Checks for alerts!
     private ErrorManager errorManager;
+    private AudioManager audioManager;
 
     private Gson gson;
 
-    public AlertHandler(ErrorManager _errorManager, LoginManager _loginManager, UserSettings _settings)
+    public AlertHandler(ErrorManager _errorManager, AudioManager _audioManager)
     {
 	errorManager = _errorManager;
+	audioManager = _audioManager;
 	gson = new Gson();
+    }
+    
+    public void start(LoginManager _loginManager, UserSettings _settings, TrayManager _trayManager)
+    {
+	if (_settings.getDelay() <= 0)
+	{
+	    errorManager.setError("You cannot have a delay shorter than or equal to 0 seconds.", true);
+	    return;
+	}
 
 	Runnable checkAlertRunnable = new Runnable()
 	{
@@ -43,13 +55,18 @@ public class AlertHandler
 		}
 		catch (IOException e1)
 		{
-		    errorManager.setError("IOException when getting alert string");
+		    errorManager.setError("IOException when getting alert string\nSTACKTRACE:\n" + e1.getStackTrace());
 		    return;
 		}
 
 		if (hasAlert(alertString))
 		{
-		    System.out.println("YOU'VE GOT AN ALERT");
+		    _trayManager.setNotification(true);
+		    audioManager.playPing();
+		}
+		else
+		{
+		    _trayManager.setNotification(false);
 		}
 	    }
 	};
@@ -77,24 +94,10 @@ public class AlertHandler
 
     private boolean hasAlert(String alertString)
     {
-	try
-	{
-	    FileWriter myWriter = new FileWriter("error.txt");
-	    myWriter.write(alertString);
-	    myWriter.close();
-	    System.out.println("Successfully wrote to the file.");
-	}
-	catch (IOException e)
-	{
-	    System.out.println("An error occurred.");
-	    e.printStackTrace();
-	}
-
 	JsonObject alert = gson.fromJson(alertString, JsonObject.class);
 	System.out.println(alert.toString());
 
-	return hasAlertWithName(alert, "_visitor_conversationsUnread")
-		|| hasAlertWithName(alert, "_visitor_alertsUnread");
+	return hasAlertWithName(alert, "_visitor_conversationsUnread") || hasAlertWithName(alert, "_visitor_alertsUnread");
     }
 
     private boolean hasAlertWithName(JsonObject obj, String name)
@@ -109,7 +112,7 @@ public class AlertHandler
 	}
 	else
 	{
-	    errorManager.setError("Login was not successful. Check user details.");
+	    errorManager.setError("Login was not successful. Check details.json", true);
 	}
 	return false;
     }

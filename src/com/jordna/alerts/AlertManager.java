@@ -1,5 +1,6 @@
 package com.jordna.alerts;
 
+import com.jordna.audio.AudioManager;
 import com.jordna.error.ErrorManager;
 import com.jordna.settings.UserSettings;
 import com.jordna.tray.TrayManager;
@@ -16,6 +17,7 @@ public class AlertManager
      * decode value 5: Ping when an alert is available 6: Win
      */
 
+    private AudioManager audioManager;
     private ErrorManager errorManager;
     private UserSettings settings;
     private LoginManager loginManager;
@@ -26,9 +28,15 @@ public class AlertManager
     {
 	trayManager = new TrayManager();
 	errorManager = new ErrorManager(trayManager);
-	settings = new UserSettings("", "", 2);
+	settings = new UserSettings(errorManager);
+
+	audioManager = new AudioManager();
+	audioManager.setPlayAudio(settings.getPlayPings());
+	
 	loginManager = new LoginManager(errorManager, settings);
-	alertHandler = new AlertHandler(errorManager, loginManager, settings);
+	
+	alertHandler = new AlertHandler(errorManager, audioManager);
+	alertHandler.start(loginManager, settings, trayManager);
     }
 
 }

@@ -22,6 +22,7 @@ public class TrayManager
 
     private Image normalIcon;
     private Image erroredIcon;
+    private Image notificationIcon;
 
     public TrayManager()
     {
@@ -31,8 +32,9 @@ public class TrayManager
 
     private void initializeIcons()
     {
-	normalIcon = new ImageIcon("Images/Icon.png").getImage();
-	erroredIcon = new ImageIcon("Images/IconError.png").getImage();
+	normalIcon = new ImageIcon(this.getClass().getResource("/icon.png")).getImage();
+	erroredIcon = new ImageIcon(this.getClass().getResource("/icon_error.png")).getImage();
+	notificationIcon = new ImageIcon(this.getClass().getResource("/icon_notification.png")).getImage();
     }
 
     private void createTrayIcon()
@@ -45,10 +47,12 @@ public class TrayManager
 	    MenuItem exit = new MenuItem("Exit");
 
 	    menu.add(website);
+	    menu.addSeparator();
 	    menu.add(exit);
 
 	    website.addActionListener(new ActionListener()
 	    {
+		@Override
 		public void actionPerformed(ActionEvent arg0)
 		{
 		    if (Desktop.isDesktopSupported())
@@ -71,6 +75,7 @@ public class TrayManager
 
 	    exit.addActionListener(new ActionListener()
 	    {
+		@Override
 		public void actionPerformed(ActionEvent arg0)
 		{
 		    System.exit(0);
@@ -94,6 +99,18 @@ public class TrayManager
     public void setErroredIcon()
     {
 	trayIcon.setImage(erroredIcon);
+    }
+    
+    public void setNotification(boolean b)
+    {
+	if (b)
+	{
+	    trayIcon.setImage(notificationIcon);
+	}
+	else
+	{
+	    trayIcon.setImage(normalIcon);
+	}
     }
 
 }
