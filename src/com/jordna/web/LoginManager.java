@@ -139,7 +139,7 @@ public class LoginManager
     private void connectURLPost()
     {
 	request = "login=" + settings.getUsername() + "&register=0&password=" + settings.getPassword()
-		+ "&cookie_check=1&redirect=%2Faccount%2Falerts&_xfToken=\"";
+		+ "&remember=1&cookie_check=1&redirect=%2Faccount%2Falerts&_xfToken=\"";
 
 	try
 	{

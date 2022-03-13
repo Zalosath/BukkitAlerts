@@ -26,7 +26,7 @@ public class AlertManager
     {
 	trayManager = new TrayManager();
 	errorManager = new ErrorManager(trayManager);
-	settings = new UserSettings("username", "password", 2);
+	settings = new UserSettings("", "", 2);
 	loginManager = new LoginManager(errorManager, settings);
 	alertHandler = new AlertHandler(errorManager, loginManager, settings);
     }

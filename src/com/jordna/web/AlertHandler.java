@@ -35,7 +35,8 @@ public class AlertHandler
 	    {
 		if (!_loginManager.hasLoggedIn()) return;
 
-		String alertString = null;
+					 // Sample alert, will fake a conversation alert
+		String alertString = ""; //"{\"error\":[\"Security error occurred. Please press back, refresh the page, and try again.\"],\"templateHtml\":\"\\n\\n\\n\\n\\n<div class=\\\"errorOverlay\\\">\\n\\t<a class=\\\"close OverlayCloser\\\"><\\/a>\\n\\t\\n\\t\\t<h2 class=\\\"heading\\\">The following error occurred:<\\/h2>\\n\\t\\t\\n\\t\\t<div class=\\\"baseHtml\\\">\\n\\t\\t\\n\\t\\t\\t<label for=\\\"ctrl_0\\\" class=\\\"OverlayCloser\\\">Security error occurred. Please press back, refresh the page, and try again.<\\/label>\\n\\t\\t\\n\\t\\t<\\/div>\\n\\t\\n<\\/div>\",\"_visitor_conversationsUnread\":\"2\",\"_visitor_alertsUnread\":\"0\"}";
 		try
 		{
 		    alertString = getAlertString();
@@ -49,7 +50,6 @@ public class AlertHandler
 		if (hasAlert(alertString))
 		{
 		    System.out.println("YOU'VE GOT AN ALERT");
-		    errorManager.setError("alert");
 		}
 	    }
 	};
@@ -102,10 +102,14 @@ public class AlertHandler
 	System.out.println("CHECKING " + name);
 	if (obj.has(name))
 	{
-	    int val = obj.get("name").getAsInt();
+	    int val = obj.get(name).getAsInt();
 	    System.out.println(val);
 
 	    if (val != 0) return true;
+	}
+	else
+	{
+	    errorManager.setError("Login was not successful. Check user details.");
 	}
 	return false;
     }
